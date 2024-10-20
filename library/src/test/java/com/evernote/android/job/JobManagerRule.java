@@ -1,8 +1,8 @@
 package com.evernote.android.job;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.JobIntentServiceReset;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentServiceReset;
 
 import com.evernote.android.job.test.TestLogger;
 
@@ -28,6 +28,7 @@ public final class JobManagerRule extends ExternalResource {
 
         JobConfig.addLogger(TestLogger.INSTANCE);
         JobConfig.setSkipJobReschedule(true);
+        JobConfig.setCloseDatabase(true);
 
         mManager = JobManager.create(mContext);
         mManager.addJobCreator(mJobCreator);

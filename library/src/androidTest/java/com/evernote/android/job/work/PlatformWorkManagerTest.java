@@ -1,27 +1,22 @@
 package com.evernote.android.job.work;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
+import androidx.work.WorkInfo;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.PlatformWorkManagerRule;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import androidx.work.State;
-import androidx.work.WorkStatus;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,6 +48,7 @@ public class PlatformWorkManagerTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     public void testCancel() {
         int jobId = new JobRequest.Builder(TAG)
                 .setExecutionWindow(TimeUnit.HOURS.toMillis(4), TimeUnit.HOURS.toMillis(5))
@@ -60,17 +56,17 @@ public class PlatformWorkManagerTest {
                 .schedule();
 
         JobRequest request = mWorkManagerRule.getManager().getJobRequest(jobId);
-        JobProxyWorkManager jobProxyWorkManager = new JobProxyWorkManager(InstrumentationRegistry.getTargetContext());
+        JobProxyWorkManager jobProxyWorkManager = new JobProxyWorkManager(ApplicationProvider.getApplicationContext());
         assertThat(jobProxyWorkManager.isPlatformJobScheduled(request)).isTrue();
 
         String tag = JobProxyWorkManager.createTag(jobId);
-        List<WorkStatus> statuses = mWorkManagerRule.getWorkStatus(tag);
+        List<WorkInfo> statuses = mWorkManagerRule.getWorkStatus(tag);
 
         assertThat(statuses).isNotNull().hasSize(1);
-        assertThat(statuses.get(0).getState()).isEqualTo(State.ENQUEUED);
+        assertThat(statuses.get(0).getState()).isEqualTo(WorkInfo.State.ENQUEUED);
 
         mWorkManagerRule.getManager().cancel(jobId);
-        assertThat(mWorkManagerRule.getWorkStatus(tag).get(0).getState()).isEqualTo(State.CANCELLED);
+        assertThat(mWorkManagerRule.getWorkStatus(tag).get(0).getState()).isEqualTo(WorkInfo.State.CANCELLED);
         assertThat(jobProxyWorkManager.isPlatformJobScheduled(request)).isFalse();
     }
 
@@ -130,13 +126,12 @@ public class PlatformWorkManagerTest {
         String tag = JobProxyWorkManager.createTag(jobId);
         mWorkManagerRule.runJob(tag);
 
-        State state = mWorkManagerRule.getWorkStatus(tag).get(0).getState();
+        WorkInfo.State state = mWorkManagerRule.getWorkStatus(tag).get(0).getState();
 
         assertThat(executed.get()).isTrue();
-        assertThat(state).isEqualTo(State.SUCCEEDED);
+        assertThat(state).isEqualTo(WorkInfo.State.SUCCEEDED);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void testConstraints(JobRequest.Builder builder) {
         int jobId = builder
                 .setRequiredNetworkType(JobRequest.NetworkType.METERED)
@@ -148,12 +143,12 @@ public class PlatformWorkManagerTest {
                 .schedule();
 
         String tag = JobProxyWorkManager.createTag(jobId);
-        List<WorkStatus> statuses = mWorkManagerRule.getWorkStatus(tag);
+        List<WorkInfo> statuses = mWorkManagerRule.getWorkStatus(tag);
 
         assertThat(statuses).isNotNull().hasSize(1);
-        assertThat(statuses.get(0).getState()).isEqualTo(State.ENQUEUED);
+        assertThat(statuses.get(0).getState()).isEqualTo(WorkInfo.State.ENQUEUED);
 
         mWorkManagerRule.getManager().cancelAllForTag(TAG);
-        assertThat(mWorkManagerRule.getWorkStatus(tag).get(0).getState()).isEqualTo(State.CANCELLED);
+        assertThat(mWorkManagerRule.getWorkStatus(tag).get(0).getState()).isEqualTo(WorkInfo.State.CANCELLED);
     }
 }

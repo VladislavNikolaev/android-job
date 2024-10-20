@@ -2,8 +2,8 @@ package com.evernote.android.job.work;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
@@ -31,7 +31,7 @@ public class PlatformWorker extends Worker {
     public Result doWork() {
         final int jobId = getJobId();
         if (jobId < 0) {
-            return Result.FAILURE;
+            return Result.failure();
         }
 
         try {
@@ -39,7 +39,7 @@ public class PlatformWorker extends Worker {
 
             JobRequest request = common.getPendingRequest(true, true);
             if (request == null) {
-                return Result.FAILURE;
+                return Result.failure();
             }
 
             Bundle transientBundle = null;
@@ -47,15 +47,15 @@ public class PlatformWorker extends Worker {
                 transientBundle = TransientBundleHolder.getBundle(jobId);
                 if (transientBundle == null) {
                     CAT.d("Transient bundle is gone for request %s", request);
-                    return Result.FAILURE;
+                    return Result.failure();
                 }
             }
 
             Job.Result result = common.executeJobRequest(request, transientBundle);
             if (Job.Result.SUCCESS == result) {
-                return Result.SUCCESS;
+                return Result.success();
             } else {
-                return Result.FAILURE;
+                return Result.failure();
             }
         } finally {
             TransientBundleHolder.cleanUpBundle(jobId);
@@ -63,7 +63,7 @@ public class PlatformWorker extends Worker {
     }
 
     @Override
-    public void onStopped(boolean cancelled) {
+    public void onStopped() {
         int jobId = getJobId();
         Job job = JobManager.create(getApplicationContext()).getJob(jobId);
 

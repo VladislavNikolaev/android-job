@@ -20,9 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 import com.evernote.android.job.util.JobCat;
 import com.evernote.android.job.util.JobUtil;
@@ -79,7 +79,7 @@ public interface JobProxy {
 
         public static long getStartMs(JobRequest request) {
             if (request.getFailureCount() > 0) {
-                return request.getBackoffOffset();
+                return request.getBackoffOffset(false);
             } else {
                 return request.getStartMs();
             }
@@ -92,7 +92,7 @@ public interface JobProxy {
         public static long getEndMs(JobRequest request, boolean shiftEnd) {
             long endMs;
             if (request.getFailureCount() > 0) {
-                endMs = request.getBackoffOffset();
+                endMs = request.getBackoffOffset(true);
             } else {
                 endMs = request.getEndMs();
             }

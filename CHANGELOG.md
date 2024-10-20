@@ -1,3 +1,33 @@
+## 1.4.3 (2022-04-27)
+* Make `PendingIntent`s immutable, what is required for Target SDK 31, see #600
+
+## 1.4.2 (2019-10-09)
+* Bump libraries to the latest version, this fixes a binary incompatibility with `WorkManager`, see #591
+
+## 1.4.1 (2019-09-30)
+* Remove appcompat as dependency, which was accidentally added in 1.4.0.
+
+## 1.4.0 (2019-09-29)
+* Migrate to AndroidX, see #583
+
+## 1.3.0 (2019-09-29)
+* (No changes compared to 1.3.0-rc1)
+* Implement an API that uses the `WorkManager` for scheduling work items
+* Initialize the job storage on a background thread, see #471
+* Restrict usage of internal classes for internal usage only, see #465
+* Use a `JobIntentService` implementation that doesn't crash, see #255
+* Offset the end time when rescheduling an inexact job, see #547
+
+## 1.3.0-rc1 (2019-03-22)
+* Offset the end time when rescheduling an inexact job, see #547
+* Upgraded WorkManager to 1.0.0, see #561
+
+## 1.3.0-alpha09 (2018-11-18)
+* Upgraded WorkManager to 1.0.0-alpha11
+
+## 1.3.0-alpha08 (2018-10-20)
+* Upgraded WorkManager with API incompatible changes, see #539
+
 ## 1.3.0-alpha07 (2018-09-23)
 * Handle crash when rescheduling jobs, see #510
 * Upgraded WorkManager

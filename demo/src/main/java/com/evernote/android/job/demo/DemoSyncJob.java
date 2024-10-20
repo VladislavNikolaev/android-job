@@ -7,13 +7,15 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.evernote.android.job.Job;
 
 import java.util.Random;
+
+import static com.evernote.android.job.PendingIntentUtil.flagImmutable;
 
 /**
  * @author rwondratschek
@@ -27,7 +29,7 @@ public class DemoSyncJob extends Job {
     protected Result onRunJob(@NonNull final Params params) {
         boolean success = new DemoSyncEngine(getContext()).sync();
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, new Intent(getContext(), MainActivity.class), 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, new Intent(getContext(), MainActivity.class), flagImmutable());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(TAG, "Job Demo", NotificationManager.IMPORTANCE_LOW);

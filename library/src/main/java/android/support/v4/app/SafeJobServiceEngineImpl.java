@@ -1,11 +1,11 @@
-package android.support.v4.app;
+package androidx.core.app;
 
 import android.app.job.JobParameters;
 import android.app.job.JobServiceEngine;
 import android.app.job.JobWorkItem;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 
 /**
@@ -70,7 +70,7 @@ public class SafeJobServiceEngineImpl extends JobServiceEngine
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        if (DEBUG) Log.d(TAG, "onStartJob: " + params);
+        if (DEBUG) Log.d(TAG, "onStopJob: " + params);
         boolean result = mService.doStopCurrentWork();
         synchronized (mLock) {
             // Once we return, the job is stopped, so its JobParameters are no
