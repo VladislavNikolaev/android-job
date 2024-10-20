@@ -25,7 +25,7 @@ allprojects {
 ext {
     compileSdkVersion = 31
     targetSdkVersion = compileSdkVersion
-    minSdkVersion = 24
+    minSdkVersion = 26
 
     playServicesVersion = '17.0.0'
     workVersion = '2.7.0'
